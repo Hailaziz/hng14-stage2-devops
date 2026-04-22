@@ -1,0 +1,19 @@
+# Environment files - never commit these
+.env
+*.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+htmlcov/
+.coverage
+
+# Node
+node_modules/
+
+# Docker
+*.log
