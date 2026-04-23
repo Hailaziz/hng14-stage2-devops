@@ -17,3 +17,5 @@ node_modules/
 
 # Docker
 *.log
+*.zip
+aws/
