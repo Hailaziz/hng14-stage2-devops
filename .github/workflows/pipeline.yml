@@ -164,12 +164,11 @@ jobs:
           docker build -t localhost:5000/frontend:latest ./frontend
 
       - name: Install Trivy
-        run: |
-          wget -q -O trivy.deb \
-            https://github.com/aquasecurity/trivy/releases/download/v0.51.1/trivy_0.51.1_Linux-64bit.deb
-          sudo dpkg -i trivy.deb
+        uses: aquasecurity/setup-trivy@v0.2.2
+        with:
+          version: v0.51.1
 
-      - name: Show vulnerabilities in API image
+      - name: Show API vulnerabilities
         run: |
           trivy image --severity CRITICAL --ignore-unfixed \
             --format table localhost:5000/api:latest || true
