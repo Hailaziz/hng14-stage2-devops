@@ -172,6 +172,7 @@ jobs:
           severity: CRITICAL
           exit-code: "1"
           ignore-unfixed: true
+          trivy-config: trivy.yaml
 
       - name: Run Trivy on worker image
         uses: aquasecurity/trivy-action@master
@@ -182,6 +183,7 @@ jobs:
           severity: CRITICAL
           exit-code: "1"
           ignore-unfixed: true
+          trivy-config: trivy.yaml
 
       - name: Run Trivy on frontend image
         uses: aquasecurity/trivy-action@master
@@ -192,6 +194,7 @@ jobs:
           severity: CRITICAL
           exit-code: "1"
           ignore-unfixed: true
+          trivy-config: trivy.yaml
 
       - name: Upload Trivy SARIF results
         uses: actions/upload-artifact@v4
