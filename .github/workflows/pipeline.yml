@@ -164,7 +164,7 @@ jobs:
           docker build -t localhost:5000/frontend:latest ./frontend
 
       - name: Scan API image
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: localhost:5000/api:latest
           format: sarif
@@ -174,7 +174,7 @@ jobs:
           ignore-unfixed: true
 
       - name: Scan worker image
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: localhost:5000/worker:latest
           format: sarif
@@ -184,7 +184,7 @@ jobs:
           ignore-unfixed: true
 
       - name: Scan frontend image
-        uses: aquasecurity/trivy-action@0.20.0
+        uses: aquasecurity/trivy-action@v0.35.0
         with:
           image-ref: localhost:5000/frontend:latest
           format: sarif
