@@ -170,7 +170,7 @@ jobs:
 
       - name: Show all CVEs table
         run: |
-          echo "=== API IMAGE ===" 
+          echo "=== API IMAGE ==="
           trivy image --severity CRITICAL --ignore-unfixed \
             --pkg-types os --skip-version-check --format table \
             localhost:5000/api:latest 2>&1 || true
@@ -249,7 +249,18 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Check deploy secrets
+        id: check_secrets
+        run: |
+          if [ -z "${{ secrets.SERVER_HOST }}" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+            echo "SERVER_HOST secret not set - skipping deploy"
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Deploy via rolling update
+        if: steps.check_secrets.outputs.skip == 'false'
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
