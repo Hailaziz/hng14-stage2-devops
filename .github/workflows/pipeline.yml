@@ -163,44 +163,47 @@ jobs:
           docker build -t localhost:5000/worker:latest ./worker
           docker build -t localhost:5000/frontend:latest ./frontend
 
-      - name: Install Trivy via script
+      - name: Install Trivy
         run: |
           curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh \
             | sh -s -- -b /usr/local/bin v0.69.3
 
+      - name: Show all CVEs table
+        run: |
+          echo "=== API IMAGE ===" 
+          trivy image --severity CRITICAL --ignore-unfixed \
+            --pkg-types os --skip-version-check --format table \
+            localhost:5000/api:latest 2>&1 || true
+          echo "=== WORKER IMAGE ==="
+          trivy image --severity CRITICAL --ignore-unfixed \
+            --pkg-types os --skip-version-check --format table \
+            localhost:5000/worker:latest 2>&1 || true
+          echo "=== FRONTEND IMAGE ==="
+          trivy image --severity CRITICAL --ignore-unfixed \
+            --pkg-types os --skip-version-check --format table \
+            localhost:5000/frontend:latest 2>&1 || true
+
       - name: Scan API image
         run: |
-          trivy image \
-            --exit-code 1 \
-            --severity CRITICAL \
-            --ignore-unfixed \
-            --vuln-type os \
-            --format sarif \
-            --output trivy-api.sarif \
+          trivy image --exit-code 1 --severity CRITICAL \
+            --ignore-unfixed --pkg-types os \
+            --format sarif --output trivy-api.sarif \
             --skip-version-check \
             localhost:5000/api:latest
 
       - name: Scan worker image
         run: |
-          trivy image \
-            --exit-code 1 \
-            --severity CRITICAL \
-            --ignore-unfixed \
-            --vuln-type os \
-            --format sarif \
-            --output trivy-worker.sarif \
+          trivy image --exit-code 1 --severity CRITICAL \
+            --ignore-unfixed --pkg-types os \
+            --format sarif --output trivy-worker.sarif \
             --skip-version-check \
             localhost:5000/worker:latest
 
       - name: Scan frontend image
         run: |
-          trivy image \
-            --exit-code 1 \
-            --severity CRITICAL \
-            --ignore-unfixed \
-            --vuln-type os \
-            --format sarif \
-            --output trivy-frontend.sarif \
+          trivy image --exit-code 1 --severity CRITICAL \
+            --ignore-unfixed --pkg-types os \
+            --format sarif --output trivy-frontend.sarif \
             --skip-version-check \
             localhost:5000/frontend:latest
 
