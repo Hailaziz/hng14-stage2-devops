@@ -163,36 +163,35 @@ jobs:
           docker build -t localhost:5000/worker:latest ./worker
           docker build -t localhost:5000/frontend:latest ./frontend
 
-      - name: Install Trivy
-        uses: aquasecurity/setup-trivy@v0.2.0
-        with:
-          version: v0.51.1
-
-      - name: Show API vulnerabilities
-        run: |
-          trivy image --severity CRITICAL --ignore-unfixed \
-            --format table localhost:5000/api:latest || true
-
       - name: Scan API image
-        run: |
-          trivy image --exit-code 1 --severity CRITICAL \
-            --ignore-unfixed --format sarif \
-            --output trivy-api.sarif \
-            localhost:5000/api:latest
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: localhost:5000/api:latest
+          format: sarif
+          output: trivy-api.sarif
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
       - name: Scan worker image
-        run: |
-          trivy image --exit-code 1 --severity CRITICAL \
-            --ignore-unfixed --format sarif \
-            --output trivy-worker.sarif \
-            localhost:5000/worker:latest
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: localhost:5000/worker:latest
+          format: sarif
+          output: trivy-worker.sarif
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
       - name: Scan frontend image
-        run: |
-          trivy image --exit-code 1 --severity CRITICAL \
-            --ignore-unfixed --format sarif \
-            --output trivy-frontend.sarif \
-            localhost:5000/frontend:latest
+        uses: aquasecurity/trivy-action@0.20.0
+        with:
+          image-ref: localhost:5000/frontend:latest
+          format: sarif
+          output: trivy-frontend.sarif
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
       - name: Upload Trivy SARIF results
         uses: actions/upload-artifact@v4
