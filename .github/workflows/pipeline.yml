@@ -163,6 +163,18 @@ jobs:
           docker build -t localhost:5000/worker:latest ./worker
           docker build -t localhost:5000/frontend:latest ./frontend
 
+      - name: DEBUG - Show all CRITICAL CVEs in API image
+        uses: aquasecurity/trivy-action@v0.35.0
+        with:
+          image-ref: localhost:5000/api:latest
+          format: table
+          severity: CRITICAL
+          ignore-unfixed: true
+          exit-code: "0"
+        env:
+          TRIVY_SKIP_VERSION_CHECK: true
+          TRIVY_NO_PROGRESS: true
+
       - name: Scan API image
         uses: aquasecurity/trivy-action@v0.35.0
         with:
