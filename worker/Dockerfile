@@ -1,13 +1,13 @@
 # Stage 1: Builder
-FROM python:3.12-slim AS builder
+FROM python:3.12-alpine AS builder
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip==24.3.1 && \
     pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 # Stage 2: Final image
-FROM python:3.12-slim AS final
-RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
+FROM python:3.12-alpine AS final
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 WORKDIR /app
 COPY --from=builder /install /usr/local
 COPY --chown=appuser:appgroup worker.py .

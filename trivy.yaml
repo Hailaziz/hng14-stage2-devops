@@ -1,5 +1,6 @@
-vulnerability:
-  ignore-unfixed: true
-  type:
+pkg:
+  types:
     - os
     - library
+vulnerability:
+  ignore-unfixed: true
