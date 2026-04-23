@@ -163,29 +163,35 @@ jobs:
           docker build -t localhost:5000/worker:latest ./worker
           docker build -t localhost:5000/frontend:latest ./frontend
 
-      - name: Install Trivy
-        run: |
-          wget -q -O trivy.deb \
-            https://github.com/aquasecurity/trivy/releases/download/v0.51.1/trivy_0.51.1_Linux-64bit.deb
-          sudo dpkg -i trivy.deb
+      - name: Run Trivy on API image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: localhost:5000/api:latest
+          format: sarif
+          output: trivy-api.sarif
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
-      - name: Scan API image
-        run: |
-          trivy image --exit-code 1 --severity CRITICAL \
-            --format sarif --output trivy-api.sarif \
-            localhost:5000/api:latest
+      - name: Run Trivy on worker image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: localhost:5000/worker:latest
+          format: sarif
+          output: trivy-worker.sarif
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
-      - name: Scan worker image
-        run: |
-          trivy image --exit-code 1 --severity CRITICAL \
-            --format sarif --output trivy-worker.sarif \
-            localhost:5000/worker:latest
-
-      - name: Scan frontend image
-        run: |
-          trivy image --exit-code 1 --severity CRITICAL \
-            --format sarif --output trivy-frontend.sarif \
-            localhost:5000/frontend:latest
+      - name: Run Trivy on frontend image
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: localhost:5000/frontend:latest
+          format: sarif
+          output: trivy-frontend.sarif
+          severity: CRITICAL
+          exit-code: "1"
+          ignore-unfixed: true
 
       - name: Upload Trivy SARIF results
         uses: actions/upload-artifact@v4
