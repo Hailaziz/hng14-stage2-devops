@@ -34,7 +34,7 @@ jobs:
           node-version: "18"
 
       - name: Install eslint
-        run: npm install -g eslint
+        run: npm install -g eslint@8
 
       - name: Create eslint config
         run: |
